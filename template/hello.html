@@ -1,0 +1,196 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Whatsapp</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'Hello.css'%}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- Font Awesome File -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+  <div class="container app">
+   
+    <div class="row app-one">
+
+      <div class="col-sm-4 side">
+        <div class="side-one">
+          <!-- Heading -->
+          <div class="row heading">
+            <!-- <div class="col-sm-3 col-xs-3 heading-avatar">
+              <div class="heading-avatar-icon">
+                <img src="http://shurl.esy.es/y">
+              </div>
+            </div> -->
+            <!-- <div class="col-sm-1 col-xs-1  heading-dot  pull-right">
+              <i class="fa fa-ellipsis-v fa-2x  pull-right" aria-hidden="true"></i>
+            </div>
+            <div class="col-sm-2 col-xs-2 heading-compose  pull-right">
+              <i class="fa fa-comments fa-2x  pull-right" aria-hidden="true"></i>
+            </div> -->
+            <div>
+              {{Name}}
+            </div>
+          </div>
+          <!-- Heading End -->
+
+          <!-- SearchBox -->
+          <div class="row searchBox">
+            <div class="col-sm-12 searchBox-inner">
+              <div class="form-group has-feedback">
+                <form method = "POST">
+                  {% csrf_token %}
+                <input id="searchText" type="text" class="form-control" name="searchText" placeholder="Search">
+                <span><a href=""><input type="submit" value="S"></a></span>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search Box End -->
+          <!-- sideBar -->
+          <div class="row sideBar">
+            {% for value in Cont %}
+            <div class="row sideBar-body">
+              <div class="col-sm-3 col-xs-3 sideBar-avatar">
+                <!-- <div class="avatar-icon">
+                  <img src="">
+                </div> -->
+              </div>
+              <div class="col-sm-9 col-xs-9 sideBar-main">
+                <div class="row">
+                  <div class="col-sm-8 col-xs-8 sideBar-name">
+                    <span class="name-meta">{{value}}
+                  </span>
+                  </div>
+                  <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <!-- Sidebar End -->
+        </div> 
+      </div>
+
+      <!-- New Message Sidebar End -->
+
+      <!-- Conversation Start -->
+      <div class="col-sm-8 conversation">
+        <!-- Heading -->
+        <div class="row heading">
+          <div class="col-sm-2 col-md-1 col-xs-3 heading-avatar">
+            <!-- <div class="heading-avatar-icon">
+              <img src="">
+            </div> -->
+          </div>
+          <div class="col-sm-8 col-xs-7 heading-name">{{searchText}}
+            <a class="heading-name-meta">
+            </a>
+            <span class="heading-online">Online</span>
+          </div>
+          <div class="col-sm-1 col-xs-1  heading-dot pull-right">
+            <i class="fa fa-ellipsis-v fa-2x  pull-right" aria-hidden="true"></i>
+          </div>
+        </div>
+        <!-- Heading End -->
+        
+        <!-- Message Box -->
+        <div class="row message" id="conversation">
+
+          {% for value in data %}
+
+            {% if value.sender == Phone %}
+              <div class="row message-body">
+                <div class="col-sm-12 message-main-sender">
+                  <div class="sender">
+                    <div class="message-text"> 
+                      {{value.chat}}                      
+                    </div>
+                    {% if private == 1 %}
+                      <span class="message-time pull-right">
+                        Null
+                      </span>
+                    {% elif Online.online == 1 %}
+                      <span class="message-time pull-right">
+                        Seen
+                      </span>
+                    {% else %}
+
+                      {% if Online.LastSeen >= value.date %}
+                        <span class="message-time pull-right">
+                          Seen
+                        </span>
+                      {% else %}
+                      <span class="message-time pull-right">
+                        Unseen
+                      </span>
+                      {% endif %}
+
+                    {% endif %}  
+                  </div>
+                </div>
+              </div>
+
+            {% else %}
+
+              <div class="row message-body">
+                <div class="col-sm-12 message-main-receiver">
+                  <div class="receiver">
+                    <div class="message-text">
+                    {{value.chat}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      
+        <!-- Message Box End -->
+
+        <!-- Reply Box -->
+        <div class="row reply">
+          <!-- <div class="col-sm-1 col-xs-1 reply-emojis">
+            <i class="fa fa-smile-o fa-2x"></i>
+          </div> -->
+          <form method = "POST">
+            {% csrf_token %}
+          <div class="col-sm-9 col-xs-9 reply-main">
+            <input class="form-control" type="text" rows="1" id="comment" name="Reply"></textarea>
+            
+          </div>
+          <!-- <div class="col-sm-1 col-xs-1 reply-recording">
+            <i class="fa fa-microphone fa-2x" aria-hidden="true"></i>
+          </div> -->
+          <a href="">
+            <!-- <div class="col-sm-1 col-xs-1 reply-send">
+              <i class="fa fa-send fa-2x" aria-hidden="true"></i>
+            </div> -->
+          <input type="submit"value="Send"></a>
+          </form>
+        </div>
+        <!-- Reply Box End -->
+      </div>
+      <!-- Conversation End -->
+    </div>
+    <!-- App One End -->
+  </div>
+
+  <!-- App End -->
+</body>
+
+</html>
